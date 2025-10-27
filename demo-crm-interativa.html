@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Conversão - Demo Interativa ✅</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #0c121c;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a2332 0%, #0c121c 100%);
+            border-bottom: 2px solid #d2bc8f;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d2bc8f;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #d2bc8f, #e6d0a3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d2bc8f;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            background-color: #1a2332;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #333;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background-color: #2a3441;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #d2bc8f;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background-color: #d2bc8f;
+            color: #0c121c;
+        }
+
+        .btn-primary:hover {
+            background-color: #e6d0a3;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: #2a3441;
+            color: white;
+            border: 1px solid #444;
+        }
+
+        /* Kanban */
+        .kanban-container {
+            padding: 2rem;
+            overflow-x: auto;
+            height: calc(100vh - 180px);
+        }
+
+        .kanban-board {
+            display: flex;
+            gap: 1.5rem;
+            min-width: min-content;
+            height: 100%;
+        }
+
+        .kanban-column {
+            background-color: #1a2332;
+            border-radius: 12px;
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            max-height: 100%;
+        }
+
+        .column-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid #333;
+            border-top: 3px solid;
+        }
+
+        .column-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .column-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .column-value {
+            color: #d2bc8f;
+            font-weight: 600;
+        }
+
+        .column-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.75rem;
+            min-height: 200px;
+        }
+
+        .column-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .column-body::-webkit-scrollbar-track {
+            background: #1a2332;
+        }
+
+        .column-body::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 3px;
+        }
+
+        /* Lead Card */
+        .lead-card {
+            background-color: #2a3441;
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lead-card:hover {
+            border-color: #d2bc8f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .lead-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        .lead-company {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        /* DISC Badge */
+        .disc-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            cursor: help;
+        }
+
+        .disc-d { background-color: #ef4444; }
+        .disc-i { background-color: #f59e0b; }
+        .disc-s { background-color: #10b981; }
+        .disc-c { background-color: #3b82f6; }
+
+        .disc-tooltip {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            width: 280px;
+            background-color: #1a2332;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+        }
+
+        .disc-badge:hover .disc-tooltip {
+            display: block;
+        }
+
+        .tooltip-title {
+            font-weight: bold;
+            color: #d2bc8f;
+            margin-bottom: 0.5rem;
+        }
+
+        .tooltip-text {
+            font-size: 0.85rem;
+            color: #ccc;
+            line-height: 1.4;
+        }
+
+        .deal-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #d2bc8f;
+            margin-bottom: 0.75rem;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .tag {
+            background-color: #1a2332;
+            color: #ccc;
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            border: 1px solid #444;
+        }
+
+        .indicators {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.8rem;
+        }
+
+        .indicator.unread { color: #60a5fa; }
+        .indicator.task { color: #f59e0b; }
+        .indicator.event { color: #10b981; }
+        .indicator.risk { color: #ef4444; }
+
+        .last-activity {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            color: #888;
+            padding-top: 0.75rem;
+            border-top: 1px solid #333;
+        }
+
+        .ai-score {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .score-bar {
+            flex: 1;
+            height: 4px;
+            background-color: #1a2332;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 0 0.5rem;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
+            transition: width 0.3s;
+        }
+
+        .score-value {
+            font-weight: 600;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #888;
+        }
+
+        /* Legend */
+        .disc-legend {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #1a2332;
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+            z-index: 100;
+        }
+
+        .legend-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #d2bc8f;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .legend-items {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .legend-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.75rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .legend-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .legend-desc {
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        .notification-badge {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background-color: #1a2332;
+            border: 1px solid #d2bc8f;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const DISC_CONFIG = {
+            D: { label: 'Dominante', color: '#ef4444', desc: 'Direto, objetivo, focado em resultados', approach: 'Seja direto. Foque em resultados.' },
+            I: { label: 'Influente', color: '#f59e0b', desc: 'Comunicativo, entusiasta, sociável', approach: 'Seja animado. Mostre cases.' },
+            S: { label: 'Estável', color: '#10b981', desc: 'Calmo, paciente, leal', approach: 'Dê tempo. Foque em relacionamento.' },
+            C: { label: 'Cauteloso', color: '#3b82f6', desc: 'Analítico, detalhista, preciso', approach: 'Forneça dados e evidências.' }
+        };
+
+        function DISCBadge({ profile }) {
+            const [show, setShow] = useState(false);
+            const config = DISC_CONFIG[profile];
+            
+            return (
+                <div 
+                    className={`disc-badge disc-${profile.toLowerCase()}`}
+                    onMouseEnter={() => setShow(true)}
+                    onMouseLeave={() => setShow(false)}
+                >
+                    {profile}
+                    {show && (
+                        <div className="disc-tooltip">
+                            <div className="tooltip-title">Perfil {profile} - {config.label}</div>
+                            <div className="tooltip-text">{config.desc}</div>
+                            <div className="tooltip-text" style={{ color: '#d2bc8f', marginTop: '0.5rem' }}>
+                                {config.approach}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        function LeadCard({ lead, onClick }) {
+            return (
+                <div className="lead-card" onClick={() => onClick(lead)}>
+                    <div className="card-header">
+                        <div>
+                            <div className="lead-name">{lead.name}</div>
+                            {lead.company && <div className="lead-company">{lead.company}</div>}
+                        </div>
+                        {lead.disc && <DISCBadge profile={lead.disc} />}
+                    </div>
+
+                    {lead.dealValue && (
+                        <div className="deal-value">
+                            R$ {lead.dealValue.toLocaleString('pt-BR')}
+                        </div>
+                    )}
+
+                    <div className="contact-info">
+                        {lead.phone && <div className="contact-item"><span>📱</span><span>{lead.phone}</span></div>}
+                        {lead.email && <div className="contact-item"><span>✉️</span><span>{lead.email}</span></div>}
+                        {lead.instagram && <div className="contact-item"><span>📷</span><span>{lead.instagram}</span></div>}
+                    </div>
+
+                    {lead.tags && lead.tags.length > 0 && (
+                        <div className="tags">
+                            {lead.tags.slice(0, 3).map((tag, i) => <span key={i} className="tag">{tag}</span>)}
+                        </div>
+                    )}
+
+                    <div className="indicators">
+                        {lead.unreadMessages > 0 && <div className="indicator unread"><span>💬</span><span>{lead.unreadMessages}</span></div>}
+                        {lead.openTasks > 0 && <div className="indicator task"><span>✓</span><span>{lead.openTasks}</span></div>}
+                        {lead.upcomingEvents > 0 && <div className="indicator event"><span>📅</span><span>{lead.upcomingEvents}</span></div>}
+                        {lead.daysSinceActivity > 7 && <div className="indicator risk"><span>⚠️</span><span>{lead.daysSinceActivity}d</span></div>}
+                    </div>
+
+                    <div className="last-activity">
+                        <span>🕐</span><span>{lead.lastActivity}</span>
+                    </div>
+
+                    {lead.aiScore && (
+                        <div className="ai-score">
+                            <span style={{ color: '#888' }}>AI Score</span>
+                            <div className="score-bar">
+                                <div className="score-fill" style={{ width: lead.aiScore + '%' }}></div>
+                            </div>
+                            <span className="score-value">{lead.aiScore}</span>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        function App() {
+            const [notification, setNotification] = useState(null);
+            
+            const stages = [
+                { id: '1', name: 'Novo contato', color: '#94a3b8' },
+                { id: '2', name: 'Diagnóstico agendado', color: '#60a5fa' },
+                { id: '3', name: 'Call realizada', color: '#a78bfa' },
+                { id: '4', name: 'Proposta enviada', color: '#f59e0b' },
+                { id: '5', name: 'Follow-up', color: '#fbbf24' },
+                { id: '6', name: 'Fechado (ganho)', color: '#10b981' }
+            ];
+
+            const leads = [
+                { id: '1', name: 'Carlos Augusto', company: 'TechStart LTDA', stageId: '2', disc: 'D', dealValue: 15000, phone: '+55 31 99900-1111', email: 'carlos@empresa.com', instagram: '@carlos_ceo', tags: ['quente', 'decisor'], unreadMessages: 2, openTasks: 1, upcomingEvents: 1, daysSinceActivity: 0, aiScore: 85, lastActivity: 'há 2 horas' },
+                { id: '2', name: 'Ana Paula Marketing', company: 'Agência Criativa', stageId: '1', disc: 'I', dealValue: 8000, phone: '+55 31 99900-2222', instagram: '@ana_marketing', tags: ['morno'], unreadMessages: 1, openTasks: 0, upcomingEvents: 0, daysSinceActivity: 1, aiScore: 60, lastActivity: 'há 1 dia' },
+                { id: '3', name: 'Roberto Oliveira', company: 'Construtora Sólida', stageId: '4', disc: 'S', dealValue: 12000, phone: '+55 31 99900-3333', tags: ['relacionamento'], unreadMessages: 0, openTasks: 1, upcomingEvents: 0, daysSinceActivity: 2, aiScore: 70, lastActivity: 'há 2 dias' },
+                { id: '4', name: 'Dra. Fernanda Costa', company: 'Clínica Excelência', stageId: '5', disc: 'C', dealValue: 20000, phone: '+55 31 99900-4444', instagram: '@dra_fernanda', tags: ['analítico'], unreadMessages: 0, openTasks: 2, upcomingEvents: 0, daysSinceActivity: 5, aiScore: 50, lastActivity: 'há 5 dias' },
+                { id: '5', name: 'Marcos Vinicius', company: 'StartupTech', stageId: '1', disc: 'D', dealValue: 30000, phone: '+55 31 99900-5555', instagram: '@mvtech', tags: ['startup', 'tech'], unreadMessages: 3, openTasks: 0, upcomingEvents: 0, daysSinceActivity: 0, aiScore: 75, lastActivity: 'há 30 min' },
+                { id: '6', name: 'Juliana Mendes', company: 'Influencers Lab', stageId: '3', disc: 'I', dealValue: 5000, instagram: '@ju_influencer', tags: ['influencer'], unreadMessages: 0, openTasks: 0, upcomingEvents: 1, daysSinceActivity: 1, aiScore: 75, lastActivity: 'há 1 dia' },
+                { id: '7', name: 'Paulo Henrique', company: 'Empresa Familiar', stageId: '6', disc: 'S', dealValue: 18000, tags: ['cliente'], unreadMessages: 0, openTasks: 0, upcomingEvents: 0, daysSinceActivity: 3, aiScore: 100, lastActivity: 'há 3 dias' },
+                { id: '8', name: 'Thiago Ribeiro', company: 'Digital Agency', stageId: '1', disc: 'I', dealValue: 7500, instagram: '@thiago_digital', tags: ['novo', 'quente'], unreadMessages: 1, openTasks: 1, upcomingEvents: 0, daysSinceActivity: 0, aiScore: 65, lastActivity: 'há 15 min' },
+                { id: '9', name: 'Sandra Regina', company: 'Consultoria SR', stageId: '5', disc: 'C', dealValue: 25000, tags: ['dados'], unreadMessages: 0, openTasks: 3, upcomingEvents: 1, daysSinceActivity: 8, aiScore: 45, lastActivity: 'há 8 dias' }
+            ];
+
+            const totalValue = leads.reduce((sum, l) => sum + l.dealValue, 0);
+            const wonLeads = leads.filter(l => l.stageId === '6').length;
+            const winRate = (wonLeads / leads.length * 100).toFixed(0);
+
+            const handleClick = (lead) => {
+                setNotification(`✅ ${lead.name} - ${lead.company}`);
+                setTimeout(() => setNotification(null), 3000);
+            };
+
+            return (
+                <>
+                    <div className="header">
+                        <div className="logo">
+                            <div className="logo-icon">🎯</div>
+                            <span>CRM Conversão</span>
+                        </div>
+                        <div className="header-stats">
+                            <div className="stat-item">
+                                <div className="stat-value">{leads.length}</div>
+                                <div className="stat-label">Leads</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-value">R$ {(totalValue/1000).toFixed(0)}k</div>
+                                <div className="stat-label">Pipeline</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-value">{winRate}%</div>
+                                <div className="stat-label">Win Rate</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="toolbar">
+                        <div className="search-box">
+                            <span className="search-icon">🔍</span>
+                            <input type="text" placeholder="Buscar leads..." />
+                        </div>
+                        <button className="btn btn-secondary">🎯 Filtros</button>
+                        <button className="btn btn-primary">➕ Novo Lead</button>
+                    </div>
+
+                    <div className="kanban-container">
+                        <div className="kanban-board">
+                            {stages.map(stage => {
+                                const stageLeads = leads.filter(l => l.stageId === stage.id);
+                                const stageValue = stageLeads.reduce((sum, l) => sum + l.dealValue, 0);
+                                
+                                return (
+                                    <div key={stage.id} className="kanban-column">
+                                        <div className="column-header" style={{ borderTopColor: stage.color }}>
+                                            <div className="column-title">{stage.name}</div>
+                                            <div className="column-stats">
+                                                <span>{stageLeads.length} lead{stageLeads.length !== 1 ? 's' : ''}</span>
+                                                {stageValue > 0 && <span className="column-value">R$ {stageValue.toLocaleString('pt-BR')}</span>}
+                                            </div>
+                                        </div>
+                                        <div className="column-body">
+                                            {stageLeads.length > 0 ? (
+                                                stageLeads.map(lead => <LeadCard key={lead.id} lead={lead} onClick={handleClick} />)
+                                            ) : (
+                                                <div className="empty-state">Nenhum lead</div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    <div className="disc-legend">
+                        <div className="legend-title">Legenda DISC</div>
+                        <div className="legend-items">
+                            {Object.entries(DISC_CONFIG).map(([key, config]) => (
+                                <div key={key} className="legend-item">
+                                    <div className={`legend-badge disc-${key.toLowerCase()}`}>{key}</div>
+                                    <div>
+                                        <div className="legend-label">{config.label}</div>
+                                        <div className="legend-desc">{config.desc.split('.')[0]}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {notification && (
+                        <div className="notification-badge">
+                            <div>{notification}</div>
+                        </div>
+                    )}
+                </>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
